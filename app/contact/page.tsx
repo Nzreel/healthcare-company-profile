@@ -1,64 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import ContactForm from "../components/ContactForm";
+import { submitContact } from "../actions/contact";
 
 export default function Contact() {
-  const [name, setName] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(`Thank you, ${name}!`);
-  };
+  async function handleSubmit(formData: FormData) {
+    await submitContact(formData);
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 4000); // notif hilang setelah 4 detik
+  }
 
   return (
-    <main>
-      <h1 style={{ fontSize: "32px", marginBottom: "20px" }}>
-        Contact Us
-      </h1>
+    <main
+      style={{
+        padding: "60px 20px",
+        textAlign: "center",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h1 style={{ fontSize: "32px", marginBottom: "8px" }}>Contact Us</h1>
+      <p style={{ color: "#6b7280", marginBottom: "30px" }}>
+        Hubungi kami untuk informasi lebih lanjut.
+      </p>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          maxWidth: "400px",
-          margin: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }}
-        />
-
-        <input
-          type="email"
-          placeholder="Your Email"
-          style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }}
-        />
-
-        <textarea
-          placeholder="Your Message"
-          style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }}
-        />
-
-        <button
-          type="submit"
+      {success && (
+        <div
           style={{
-            background: "#2563eb",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
+            backgroundColor: "#d1fae5",
+            color: "#065f46",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            marginBottom: "20px",
+            maxWidth: "500px",
+            margin: "0 auto 20px auto",
+            fontWeight: "bold",
           }}
         >
-          Send Message
-        </button>
-      </form>
+          ✅ Pesan berhasil dikirim! Kami akan segera menghubungi Anda.
+        </div>
+      )}
+
+      <ContactForm action={handleSubmit} />
     </main>
   );
 }
